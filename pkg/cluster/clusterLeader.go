@@ -12,9 +12,10 @@ import (
 
 	"github.com/plunder-app/kube-vip/pkg/bgp"
 	"github.com/plunder-app/kube-vip/pkg/kubevip"
-	leaderelection "github.com/plunder-app/kube-vip/pkg/leaderElection"
 	"github.com/plunder-app/kube-vip/pkg/loadbalancer"
 	"github.com/plunder-app/kube-vip/pkg/packet"
+
+	leaderelection "k8s.io/client-go/tools/leaderelection"
 
 	"github.com/plunder-app/kube-vip/pkg/vip"
 
