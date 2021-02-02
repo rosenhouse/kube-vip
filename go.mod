@@ -28,6 +28,7 @@ require (
 	github.com/kamhlos/upnp v0.0.0-20171112074648-2713e75d9aef
 	github.com/magiconair/properties v1.8.3 // indirect
 	github.com/mattn/go-colorable v0.1.7 // indirect
+	github.com/mdlayher/ndp v0.0.0-20200602162440-17ab9e3e5567
 	github.com/mdlayher/raw v0.0.0-20191009151244-50f2db8cc065 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/osrg/gobgp v2.0.0+incompatible
@@ -59,4 +60,3 @@ require (
 )
 
 replace github.com/osrg/gobgp v2.0.0+incompatible => github.com/osrg/gobgp v0.0.0-20191101114856-a42a1a5f6bf0
-

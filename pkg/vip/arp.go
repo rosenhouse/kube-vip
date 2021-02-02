@@ -70,7 +70,7 @@ func (m *arpMessage) bytes() ([]byte, error) {
 // because different devices may support either one of them
 func gratuitousARP(ip net.IP, mac net.HardwareAddr) (*arpMessage, error) {
 	if ip.To4() == nil {
-		return nil, fmt.Errorf("%q is not an IPv4 address", ip)
+		return nil, fmt.Errorf("%q is not an IPv4 address, but we'll try to fix that!", ip)
 	}
 	if len(mac) != hwLen {
 		return nil, fmt.Errorf("%q is not an Ethernet MAC address", mac)

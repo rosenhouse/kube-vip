@@ -3,6 +3,7 @@ package cluster
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -279,16 +280,43 @@ func (cluster *Cluster) StartLeaderCluster(c *kubevip.Config, sm *Manager, bgpSe
 				if c.EnableARP == true {
 					ctxArp, cancelArp = context.WithCancel(context.Background())
 
+					var ndp *vip.NdpResponder
+					var err error
+					var ipToAnnounce net.IP
+					if vip.IsIPv6(cluster.Network.IP()) {
+						iface, err := net.InterfaceByName(c.Interface)
+						if err != nil {
+							log.Error("unable to find interface %s", c.Interface)
+							return
+						}
+
+						ndp, err = vip.NewNDPResponder(iface)
+						if err != nil {
+							log.Error("new ndp responder: %s", err)
+							return
+						}
+
+						ipToAnnounce = net.ParseIP(cluster.Network.IP())
+					}
+
 					go func(ctx context.Context) {
 						for {
 							select {
 							case <-ctx.Done(): // if cancel() execute
 								return
 							default:
-								// Gratuitous ARP, will broadcast to new MAC <-> IP
-								err = vip.ARPSendGratuitous(cluster.Network.IP(), c.Interface)
-								if err != nil {
-									log.Warnf("%v", err)
+								if vip.IsIPv4(cluster.Network.IP()) {
+									// Gratuitous ARP, will broadcast to new MAC <-> IP
+									err = vip.ARPSendGratuitous(cluster.Network.IP(), c.Interface)
+									if err != nil {
+										log.Warnf("%v", err)
+									}
+								} else if ndp != nil {
+									if err = ndp.Gratuitous(ipToAnnounce); err != nil {
+										log.Warnf("%v", err)
+									}
+								} else {
+									log.Warnf("want to arp, but nothing to do!")
 								}
 							}
 							time.Sleep(3 * time.Second)
