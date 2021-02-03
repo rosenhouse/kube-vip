@@ -370,7 +370,7 @@ func (cluster *Cluster) StartLeaderCluster(c *kubevip.Config, sm *Manager, bgpSe
 	// Force a removal of the VIP (ignore the error if we don't have it)
 	cluster.Network.DeleteIP()
 
-	return nil
+	return fmt.Errorf("lost leader election, need to crash in order to recover")
 }
 
 // TODO - refactor an active machine func(), this will replace the singleNode code and have a single code block
